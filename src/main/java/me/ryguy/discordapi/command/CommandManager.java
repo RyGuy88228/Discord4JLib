@@ -25,7 +25,7 @@ public class CommandManager {
 
         if (ret.isPresent())
             return ret.get();
-        else
-            return null;
+
+        return null;
     }
 }

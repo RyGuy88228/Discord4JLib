@@ -18,7 +18,7 @@ public class CommandHandler {
                 return;
             }
             CommandManager.getCommand(message.getContent().split(" ")[0].substring(DiscordBot.getBot().getPrefix().length()))
-                    .execute(message.getAuthor().get(), message.getChannel(), message.getContent().split(" ")[0].substring(DiscordBot.getBot().getPrefix().length()), ArrayUtils.remove(message.getContent().split(" "), 0));
+                    .execute(message, message.getContent().split(" ")[0].substring(DiscordBot.getBot().getPrefix().length()), ArrayUtils.remove(message.getContent().split(" "), 0));
         });
     }
 }

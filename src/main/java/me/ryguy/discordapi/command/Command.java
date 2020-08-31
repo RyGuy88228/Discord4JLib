@@ -2,6 +2,7 @@ package me.ryguy.discordapi.command;
 
 import discord4j.core.object.entity.Message;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,6 +12,7 @@ public abstract class Command implements CommandExecutor {
 
     public Command(String name) {
         this.name = name;
+        aliases = new ArrayList<>(); //Empty arraylist
     }
 
     public Command(String name, String... aliases) {
