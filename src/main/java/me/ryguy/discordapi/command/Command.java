@@ -33,4 +33,8 @@ public abstract class Command implements CommandExecutor {
     public List<String> getAliases() {
         return aliases;
     }
+
+    public boolean canExecute() {
+        return true;
+    }
 }
