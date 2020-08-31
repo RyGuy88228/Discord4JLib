@@ -9,7 +9,7 @@ public class CommandHandler {
     public CommandHandler() {
         DiscordBot.getBot().getGateway().on(MessageCreateEvent.class).subscribe(e -> {
             Message message = e.getMessage();
-            Command cmd = CommandManager.getCommand(message.getContent().split(" ")[0].substring(DiscordBot.getBot().getPrefix().length()));
+            Command cmd = CommandManager.getCommand(message.getContent().split(" ")[0].split("\n")[0].substring(DiscordBot.getBot().getPrefix().length()));
             if (message.getAuthor().get().isBot())
                 return;
             if (cmd == null)
@@ -17,7 +17,7 @@ public class CommandHandler {
             if (!cmd.canExecute(message)) {
                 return;
             }
-            CommandManager.getCommand(message.getContent().split(" ")[0].substring(DiscordBot.getBot().getPrefix().length()))
+            CommandManager.getCommand(message.getContent().split(" ")[0].split("\n")[0].substring(DiscordBot.getBot().getPrefix().length()))
                     .execute(message, message.getContent().split(" ")[0].substring(DiscordBot.getBot().getPrefix().length()), ArrayUtils.remove(message.getContent().split(" "), 0));
         });
     }
