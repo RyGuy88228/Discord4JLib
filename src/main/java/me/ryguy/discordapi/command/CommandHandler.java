@@ -14,7 +14,7 @@ public class CommandHandler {
                 return;
             if (cmd == null)
                 return;
-            if (!cmd.canExecute()) {
+            if (!cmd.canExecute(message)) {
                 return;
             }
             CommandManager.getCommand(message.getContent().split(" ")[0].substring(DiscordBot.getBot().getPrefix().length()))

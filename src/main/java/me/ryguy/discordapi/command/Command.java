@@ -1,5 +1,7 @@
 package me.ryguy.discordapi.command;
 
+import discord4j.core.object.entity.Message;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,7 +36,7 @@ public abstract class Command implements CommandExecutor {
         return aliases;
     }
 
-    public boolean canExecute() {
+    public boolean canExecute(Message msg) {
         return true;
     }
 }
