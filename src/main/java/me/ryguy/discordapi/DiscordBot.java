@@ -7,6 +7,7 @@ import discord4j.core.event.domain.lifecycle.ReadyEvent;
 import discord4j.core.object.entity.User;
 import me.ryguy.discordapi.command.CommandHandler;
 import me.ryguy.discordapi.listeners.EventHandler;
+import me.ryguy.discordapi.listeners.MainListener;
 
 public class DiscordBot {
 
@@ -40,6 +41,8 @@ public class DiscordBot {
 
         new CommandHandler();
         new EventHandler();
+
+        new MainListener().register();
 
     }
 
