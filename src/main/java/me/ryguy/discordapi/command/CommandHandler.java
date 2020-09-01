@@ -9,7 +9,17 @@ public class CommandHandler {
     public CommandHandler() {
         DiscordBot.getBot().getGateway().on(MessageCreateEvent.class).subscribe(e -> {
             Message message = e.getMessage();
-            Command cmd = CommandManager.getCommand(message.getContent().split(" ")[0].split("\n")[0].substring(DiscordBot.getBot().getPrefix().length()));
+            if (e.getMessage().getEmbeds().size() != 0) return;
+            if (!e.getMessage().getContent().startsWith(DiscordBot.getBot().getPrefix())) return;
+            Command cmd; //really lazy af way of making sure a command is valid and avoiding errors
+            try {
+                cmd = CommandManager.getCommand(message.getContent()
+                        .split(" ")[0]
+                        .substring(DiscordBot.getBot().getPrefix().length())
+                        .split("\n")[0]);
+            } catch (Exception ex) {
+                return;
+            }
             if (message.getAuthor().get().isBot())
                 return;
             if (cmd == null)
