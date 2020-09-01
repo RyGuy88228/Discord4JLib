@@ -29,6 +29,7 @@ public class DiscordBot {
         } catch (Exception e) {
             System.out.println("Error initializing bot with token " + token + "!");
             e.printStackTrace();
+            System.exit(0);
             return;
         }
         gateway.on(ReadyEvent.class).subscribe(e -> {
