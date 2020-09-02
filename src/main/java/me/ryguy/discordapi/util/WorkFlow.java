@@ -6,10 +6,7 @@ import discord4j.core.object.entity.User;
 import discord4j.core.object.entity.channel.Channel;
 import reactor.function.Consumer3;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
@@ -22,7 +19,7 @@ public class WorkFlow<T> {
     private final long channel;
     private final long user;
     private boolean deletePrevious = false;
-    private Map<String, Consumer<WorkFlow<T>>> rules;
+    private final Map<String, Consumer<WorkFlow<T>>> rules;
 
     private long lastSetupMsg;
     private long lastUserMsg;
@@ -32,6 +29,7 @@ public class WorkFlow<T> {
         this.steps = new LinkedBlockingQueue<>();
         this.channel = channel.getId().asLong();
         this.user = user.getId().asLong();
+        this.rules = new HashMap<>();
     }
 
     public static void handle(MessageCreateEvent e) {
