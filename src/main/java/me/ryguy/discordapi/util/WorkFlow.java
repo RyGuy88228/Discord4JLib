@@ -70,9 +70,6 @@ public class WorkFlow<T> {
     public boolean nextStep() {
         steps.remove();
         if (steps.peek() != null) {
-            if (deletePrevious) {
-
-            }
             steps.peek().preEvent.accept(getInstance());
             return true;
         }
