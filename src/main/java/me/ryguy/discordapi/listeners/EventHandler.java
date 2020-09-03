@@ -16,7 +16,7 @@ public class EventHandler {
                         try {
                             m.invoke(set.getKey(), e);
                         } catch (Exception ex) {
-                            ex.printStackTrace();
+                            DiscordBot.getBot().eventException.accept(ex, e);
                         }
                     }
                 }

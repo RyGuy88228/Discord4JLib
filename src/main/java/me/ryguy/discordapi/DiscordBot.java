@@ -3,11 +3,15 @@ package me.ryguy.discordapi;
 import discord4j.core.DiscordClient;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
+import discord4j.core.event.domain.Event;
 import discord4j.core.event.domain.lifecycle.ReadyEvent;
 import discord4j.core.object.entity.User;
+import me.ryguy.discordapi.command.Command;
 import me.ryguy.discordapi.command.CommandHandler;
 import me.ryguy.discordapi.listeners.EventHandler;
 import me.ryguy.discordapi.listeners.MainListener;
+
+import java.util.function.BiConsumer;
 
 public class DiscordBot {
 
@@ -16,6 +20,9 @@ public class DiscordBot {
     private static DiscordBot instance;
     private final String token;
     private final String prefix;
+
+    public BiConsumer<Exception, Event> eventException = (ex, ev) -> ex.printStackTrace();
+    public BiConsumer<Exception, Command> commandException = (ex, cmd) -> ex.printStackTrace();
 
     public DiscordBot(String token, String prefix) {
         this.token = token;
@@ -64,5 +71,17 @@ public class DiscordBot {
 
     public String getPrefix() {
         return this.prefix;
+    }
+
+    public void setCommandErrorHandler(BiConsumer<Exception, Command> consumer) {
+        DiscordBot.getBot().commandException = consumer;
+    }
+
+    public void setEventErrorHandler(BiConsumer<Exception, Event> consumer) {
+        DiscordBot.getBot().eventException = consumer;
+    }
+
+    public void handleEventException(Exception ex, Event e) {
+        ex.printStackTrace();
     }
 }

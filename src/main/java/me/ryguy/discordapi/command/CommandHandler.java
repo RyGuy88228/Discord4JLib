@@ -6,10 +6,12 @@ import me.ryguy.discordapi.DiscordBot;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class CommandHandler {
     public CommandHandler() {
+        AtomicReference<Command> cmd = new AtomicReference<>();
         DiscordBot.getBot().getGateway().on(MessageCreateEvent.class).subscribe(e -> {
             Message message = e.getMessage();
             if (e.getMessage().getEmbeds().size() != 0) return;
@@ -20,14 +22,14 @@ public class CommandHandler {
 
             try {
                 List<String> command = parseCommand(message.getContent());
-                Command cmd = CommandManager.getCommand(command.get(0));
+                cmd.set(CommandManager.getCommand(command.get(0)));
 
-                if (cmd == null || !cmd.canExecute(message))
+                if (cmd.get() == null || !cmd.get().canExecute(message))
                     return;
 
-                cmd.execute(message, command.get(0), command.subList(1, command.size()).toArray(new String[0]));
+                cmd.get().execute(message, command.get(0), command.subList(1, command.size()).toArray(new String[0]));
             } catch (Exception ex) {
-                ex.printStackTrace();
+                DiscordBot.getBot().commandException.accept(ex, cmd.get());
             }
         });
     }
