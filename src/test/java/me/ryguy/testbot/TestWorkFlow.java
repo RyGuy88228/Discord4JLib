@@ -21,37 +21,42 @@ public class TestWorkFlow extends Command {
         AtomicReference<String> desc = new AtomicReference<>();
         AtomicReference<String> footer = new AtomicReference<>();
 
-        System.out.println("Executing workflow!");
-
         WorkFlow<EmbedCreateSpec> workFlow = new WorkFlow<EmbedCreateSpec>(new EmbedCreateSpec(), message.getChannel().block(), message.getAuthor().get());
+
+        workFlow.deletePreviousStep();
 
         workFlow.addRule("!cancel", embed -> {
             message.getChannel().block().createMessage(":x: Workflow Cancelled!").block();
             workFlow.end();
         }).andThen(embed -> {
-            message.getChannel().block().createEmbed(e -> {
+            workFlow.sendMessage(message.getChannel().block().createEmbed(e -> {
+                e.setTitle("Embed Creator");
+                e.setFooter("!cancel to cancel!", null);
                 e.setColor(Color.GREEN);
-                e.setTitle("Welcome to embed creator!");
                 e.setDescription("Enter a description!");
-            }).block();
+            }));
         }, (embed, f, m) -> {
             desc.set(m.getContent());
             embed.setDescription(m.getContent());
             f.nextStep();
         }).andThen(embed -> {
-            message.getChannel().block().createEmbed(e -> {
+            workFlow.sendMessage(message.getChannel().block().createEmbed(e -> {
+                e.setTitle("Embed Creator");
+                e.setFooter("!cancel to cancel!", null);
                 e.setColor(Color.GREEN);
                 e.setDescription("Enter a title!");
-            }).block();
+            }));
         }, (embed, f, m) -> {
             embed.setTitle(m.getContent());
             name.set(m.getContent());
             f.nextStep();
         }).andThen(embed -> {
-            message.getChannel().block().createEmbed(e -> {
+            workFlow.sendMessage(message.getChannel().block().createEmbed(e -> {
+                e.setTitle("Embed Creator");
+                e.setFooter("!cancel to cancel!", null);
                 e.setColor(Color.GREEN);
                 e.setDescription("Enter a footer!");
-            }).block();
+            }));
         }, (embed, f, m) -> {
             footer.set(m.getContent());
             embed.setFooter(m.getContent(), null);

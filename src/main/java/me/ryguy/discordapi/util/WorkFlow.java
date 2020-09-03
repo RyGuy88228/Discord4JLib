@@ -4,6 +4,7 @@ import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.entity.channel.Channel;
+import reactor.core.publisher.Mono;
 import reactor.function.Consumer3;
 
 import java.util.*;
@@ -21,8 +22,8 @@ public class WorkFlow<T> {
     private boolean deletePrevious = false;
     private final Map<String, Consumer<WorkFlow<T>>> rules;
 
-    private long lastSetupMsg;
-    private long lastUserMsg;
+    private Message lastSetupMsg;
+    private Message lastUserMsg;
 
     public WorkFlow(T type, Channel channel, User user) {
         this.type = type;
@@ -38,12 +39,11 @@ public class WorkFlow<T> {
                 if (flow.rules.containsKey(e.getMessage().getContent().toLowerCase())) {
                     ((Consumer<WorkFlow>) flow.rules.get(e.getMessage().getContent().toLowerCase())).accept(flow.getInstance());
                 }
-                flow.lastUserMsg = e.getMessage().getId().asLong();
+                flow.lastUserMsg = e.getMessage();
                 flow.getCurrentStep().handleEvent.accept(flow.type, flow.getInstance(), e.getMessage());
             }
         }
     }
-
     public WorkFlow<T> getInstance() {
         return this;
     }
@@ -71,8 +71,18 @@ public class WorkFlow<T> {
     public boolean nextStep() {
         steps.remove();
         if (steps.peek() != null) {
+            if (deletePrevious) {
+                try {
+                    getInstance().lastSetupMsg.delete().block();
+                    getInstance().lastUserMsg.delete().block();
+                } catch (Exception e) {
+                    System.out.println("Bot has no permissions to delete current workflow message!");
+                }
+            }
             steps.peek().preEvent.accept(getInstance());
             return true;
+        } else {
+            getInstance().end();
         }
         return false;
     }
@@ -83,11 +93,16 @@ public class WorkFlow<T> {
     }
 
     public void end() {
-        flows.remove(this);
+        flows.remove(getInstance());
     }
 
     public Step getCurrentStep() {
         return steps.peek();
+    }
+
+    public void sendMessage(Mono<Message> msg) {
+        Message m = msg.block();
+        this.lastSetupMsg = m;
     }
 
     public class Step {
