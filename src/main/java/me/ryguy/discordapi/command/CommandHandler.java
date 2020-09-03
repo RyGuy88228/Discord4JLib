@@ -3,7 +3,6 @@ package me.ryguy.discordapi.command;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Message;
 import me.ryguy.discordapi.DiscordBot;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
 import java.util.List;
