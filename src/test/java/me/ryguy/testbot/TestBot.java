@@ -15,6 +15,7 @@ public class TestBot {
 
         new TestCommand().register();
         new TestListener().register();
+        new TestWorkFlow().register();
 
         bot.endStartup();
     }
