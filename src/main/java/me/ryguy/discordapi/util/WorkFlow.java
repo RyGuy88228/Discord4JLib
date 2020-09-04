@@ -44,7 +44,8 @@ public class WorkFlow<T> {
                     ((Consumer<WorkFlow>) flow.rules.get(e.getMessage().getContent().toLowerCase())).accept(flow.getInstance());
                 }
                 flow.lastUserMsg = e.getMessage();
-                flow.getCurrentStep().handleEvent.accept(flow.type, flow.getInstance(), e.getMessage());
+                if (flow.getCurrentStep() != null)
+                    flow.getCurrentStep().handleEvent.accept(flow.type, flow.getInstance(), e.getMessage());
             }
         }
     }
