@@ -28,4 +28,8 @@ public class CommandManager {
 
         return null;
     }
+
+    public static List<Command> getRegisteredCommands() {
+        return commands;
+    }
 }
