@@ -1,5 +1,6 @@
 package me.ryguy.testbot;
 
+import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Message;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.rest.util.Color;
@@ -12,6 +13,11 @@ import java.util.concurrent.atomic.AtomicReference;
 public class TestWorkFlow extends Command {
     public TestWorkFlow() {
         super("testworkflow", "twf");
+    }
+
+    @Override
+    public boolean canExecute(MessageCreateEvent e) {
+        return true;
     }
 
     @Override
