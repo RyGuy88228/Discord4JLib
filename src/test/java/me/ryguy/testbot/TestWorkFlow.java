@@ -15,7 +15,7 @@ public class TestWorkFlow extends Command {
     }
 
     @Override
-    public boolean canExecute(Message e) {
+    public boolean canExecute(Message e, boolean ignore) {
         return true;
     }
 

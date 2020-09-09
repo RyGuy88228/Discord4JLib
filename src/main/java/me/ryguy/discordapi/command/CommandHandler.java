@@ -24,7 +24,7 @@ public class CommandHandler {
                 List<String> command = parseCommand(message.getContent());
                 cmd.set(CommandManager.getCommand(command.get(0)));
 
-                if (cmd.get() == null || !cmd.get().canExecute(e.getMessage()))
+                if (cmd.get() == null || !cmd.get().canExecute(e.getMessage(), true))
                     return;
 
                 cmd.get().execute(message, command.get(0), command.subList(1, command.size()).toArray(new String[0]));

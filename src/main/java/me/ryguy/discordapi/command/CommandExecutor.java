@@ -7,7 +7,7 @@ public interface CommandExecutor {
 
     Mono<Void> execute(Message message, String alias, String[] args);
 
-    default boolean canExecute(Message e) {
+    default boolean canExecute(Message message, boolean shouldSendMessage) {
         return true;
     }
 
