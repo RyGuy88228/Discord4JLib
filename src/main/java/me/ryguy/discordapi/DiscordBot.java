@@ -27,26 +27,18 @@ public class DiscordBot {
     private static DiscordBot instance;
     private final String token;
     private final String prefix;
-    public BiConsumer<Throwable, Event> eventException;
-    public BiConsumer<Throwable, Command> commandException;
+    public BiConsumer<Throwable, Event> eventException = (ex, ev) -> ex.printStackTrace();
+    public BiConsumer<Throwable, Command> commandException = (ex, cmd) -> ex.printStackTrace();
     @Setter
-    public BiConsumer<Command, Message> checkCommandCancellation;
+    public BiConsumer<Command, Message> checkCommandCancellation = (cmd, msg) -> {};
     @Setter
-    public Consumer<Event> checkEventCancellation;
+    public Consumer<Event> checkEventCancellation = event -> {};
     private DiscordClient client;
     private GatewayDiscordClient gateway;
 
     public DiscordBot(String token, String prefix) {
         this.token = token;
         this.prefix = prefix;
-
-        this.eventException = (ex, ev) -> ex.printStackTrace();
-        this.commandException = (ex, cmd) -> ex.printStackTrace();
-
-        this.checkCommandCancellation = (cmd, msg) -> {
-        };
-        this.checkEventCancellation = event -> {
-        };
     }
 
     public static DiscordBot getBot() {
