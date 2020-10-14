@@ -29,14 +29,17 @@ public abstract class Command implements CommandExecutor, Cancellable {
         CommandManager.registerCommand(this);
         System.out.println("Registered command " + this.getName() + "!");
     }
+
     public void unregister() {
         CommandManager.unregisterCommand(this);
         System.out.println("Unregistered command " + this.getName() + "!");
     }
+
     @Override
     public boolean isCancelled() {
         return this.cancelled;
     }
+
     @Override
     public void setCancelled(boolean bool) {
         this.cancelled = bool;

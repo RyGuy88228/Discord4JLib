@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Getter @Setter
+@Getter
+@Setter
 public class EventHolder implements Cancellable {
     Class<? extends Event> eventClass;
     Map<Listener, List<Method>> methods;
@@ -22,6 +23,10 @@ public class EventHolder implements Cancellable {
         this.cancelled = false;
     }
 
+    public static EventHolder of(Class<? extends Event> clazz) {
+        return EventManager.getEvents().parallelStream().filter(eh -> eh.getEventClass() == clazz).findFirst().orElse(null);
+    }
+
     @Override
     public boolean isCancelled() {
         return this.cancelled;
@@ -30,9 +35,5 @@ public class EventHolder implements Cancellable {
     @Override
     public void setCancelled(boolean bool) {
         this.cancelled = bool;
-    }
-
-    public static EventHolder of(Class<? extends Event> clazz) {
-        return EventManager.getEvents().parallelStream().filter(eh -> eh.getEventClass() == clazz).findFirst().orElse(null);
     }
 }

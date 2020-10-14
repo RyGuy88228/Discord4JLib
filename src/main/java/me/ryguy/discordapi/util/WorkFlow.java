@@ -23,9 +23,8 @@ public class WorkFlow<T> {
     private final Queue<Step> steps;
     private final long channel;
     private final long user;
-    private boolean deletePrevious = false;
     private final Map<String, Consumer<WorkFlow<T>>> rules;
-
+    private boolean deletePrevious = false;
     private Message lastSetupMsg;
     private Message lastUserMsg;
 

@@ -1,7 +1,6 @@
 package me.ryguy.discordapi.listeners;
 
 import discord4j.core.event.domain.Event;
-import discord4j.core.event.domain.channel.ChannelEvent;
 import me.ryguy.discordapi.DiscordBot;
 
 import java.lang.reflect.Method;

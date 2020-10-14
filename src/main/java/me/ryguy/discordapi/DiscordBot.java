@@ -24,23 +24,33 @@ import java.util.function.Consumer;
 
 public class DiscordBot {
 
-    private DiscordClient client;
-    private GatewayDiscordClient gateway;
     private static DiscordBot instance;
     private final String token;
     private final String prefix;
-
-    public BiConsumer<Throwable, Event> eventException = (ex, ev) -> ex.printStackTrace();
-    public BiConsumer<Throwable, Command> commandException = (ex, cmd) -> ex.printStackTrace();
-
+    public BiConsumer<Throwable, Event> eventException;
+    public BiConsumer<Throwable, Command> commandException;
     @Setter
-    public BiConsumer<Command, Message> checkCommandCancellation = (cmd, msg) -> {};
+    public BiConsumer<Command, Message> checkCommandCancellation;
     @Setter
-    public Consumer<Event> checkEventCancellation = event -> {};
+    public Consumer<Event> checkEventCancellation;
+    private DiscordClient client;
+    private GatewayDiscordClient gateway;
 
     public DiscordBot(String token, String prefix) {
         this.token = token;
         this.prefix = prefix;
+
+        this.eventException = (ex, ev) -> ex.printStackTrace();
+        this.commandException = (ex, cmd) -> ex.printStackTrace();
+
+        this.checkCommandCancellation = (cmd, msg) -> {
+        };
+        this.checkEventCancellation = event -> {
+        };
+    }
+
+    public static DiscordBot getBot() {
+        return instance;
     }
 
     public void loginBot() {
@@ -78,10 +88,6 @@ public class DiscordBot {
 
     public void endStartup() {
         gateway.onDisconnect().block();
-    }
-
-    public static DiscordBot getBot() {
-        return instance;
     }
 
     public GatewayDiscordClient getGateway() {

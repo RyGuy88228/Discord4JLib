@@ -27,7 +27,7 @@ public class CommandHandler {
                 if (cmd.get() == null || !cmd.get().canExecute(e.getMessage(), true))
                     return;
                 DiscordBot.getBot().checkCommandCancellation.accept(cmd.get(), message);
-                if(!cmd.get().isCancelled())
+                if (!cmd.get().isCancelled())
                     cmd.get().execute(message, command.get(0), command.subList(1, command.size()).toArray(new String[0])).doOnError(error -> DiscordBot.getBot().commandException.accept(error, cmd.get()));
                 else
                     System.out.println("Command " + cmd.get().getName() + " was cancelled!");
