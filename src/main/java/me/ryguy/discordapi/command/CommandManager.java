@@ -26,6 +26,9 @@ public class CommandManager {
         return ret.orElse(null);
 
     }
+    public static Command getCommand(Class<? extends Command> command) {
+        return commands.parallelStream().filter(cmd -> cmd.getClass() == command).findFirst().orElse(null);
+    }
 
     public static List<Command> getRegisteredCommands() {
         return commands;
