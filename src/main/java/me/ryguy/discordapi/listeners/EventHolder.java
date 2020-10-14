@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -25,6 +26,9 @@ public class EventHolder implements Cancellable {
 
     public static EventHolder of(Class<? extends Event> clazz) {
         return EventManager.getEvents().parallelStream().filter(eh -> eh.getEventClass() == clazz).findFirst().orElse(null);
+    }
+    public static List<EventHolder> of(Listener listener) {
+        return EventManager.getEvents().parallelStream().filter(eh -> eh.getMethods().keySet().parallelStream().map(Listener::getClass).collect(Collectors.toList()).contains(listener.getClass())).collect(Collectors.toList());
     }
 
     @Override
