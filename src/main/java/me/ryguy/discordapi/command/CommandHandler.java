@@ -34,7 +34,7 @@ public class CommandHandler {
                         } else {
                             System.out.println("Bot is null in handling command! (this shouldn't be running, purely debug");
                         }
-                    });
+                    }).block();
                 } else {
                     System.out.println("Command " + cmd.get().getName() + " was cancelled!");
                 }
