@@ -5,11 +5,13 @@ import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.Event;
 import discord4j.core.event.domain.lifecycle.ReadyEvent;
+import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.User;
 import discord4j.rest.http.client.ClientException;
 import discord4j.rest.request.RouteMatcher;
 import discord4j.rest.response.ResponseFunction;
 import discord4j.rest.route.Routes;
+import lombok.Setter;
 import me.ryguy.discordapi.command.Command;
 import me.ryguy.discordapi.command.CommandHandler;
 import me.ryguy.discordapi.listeners.EventHandler;
@@ -18,6 +20,7 @@ import reactor.retry.Retry;
 
 import java.time.Duration;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class DiscordBot {
 
@@ -29,6 +32,11 @@ public class DiscordBot {
 
     public BiConsumer<Throwable, Event> eventException = (ex, ev) -> ex.printStackTrace();
     public BiConsumer<Throwable, Command> commandException = (ex, cmd) -> ex.printStackTrace();
+
+    @Setter
+    public BiConsumer<Command, Message> checkCommandCancellation = (cmd, msg) -> {};
+    @Setter
+    public Consumer<Event> checkEventCancellation = event -> {};
 
     public DiscordBot(String token, String prefix) {
         this.token = token;
@@ -94,9 +102,5 @@ public class DiscordBot {
 
     public void setEventErrorHandler(BiConsumer<Throwable, Event> consumer) {
         DiscordBot.getBot().eventException = consumer;
-    }
-
-    public void handleEventException(Exception ex, Event e) {
-        ex.printStackTrace();
     }
 }
