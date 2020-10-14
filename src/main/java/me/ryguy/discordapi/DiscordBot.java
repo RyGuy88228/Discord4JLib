@@ -6,11 +6,17 @@ import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.Event;
 import discord4j.core.event.domain.lifecycle.ReadyEvent;
 import discord4j.core.object.entity.User;
+import discord4j.rest.http.client.ClientException;
+import discord4j.rest.request.RouteMatcher;
+import discord4j.rest.response.ResponseFunction;
+import discord4j.rest.route.Routes;
 import me.ryguy.discordapi.command.Command;
 import me.ryguy.discordapi.command.CommandHandler;
 import me.ryguy.discordapi.listeners.EventHandler;
 import me.ryguy.discordapi.listeners.MainListener;
+import reactor.retry.Retry;
 
+import java.time.Duration;
 import java.util.function.BiConsumer;
 
 public class DiscordBot {
@@ -21,8 +27,8 @@ public class DiscordBot {
     private final String token;
     private final String prefix;
 
-    public BiConsumer<Exception, Event> eventException = (ex, ev) -> ex.printStackTrace();
-    public BiConsumer<Exception, Command> commandException = (ex, cmd) -> ex.printStackTrace();
+    public BiConsumer<Throwable, Event> eventException = (ex, ev) -> ex.printStackTrace();
+    public BiConsumer<Throwable, Command> commandException = (ex, cmd) -> ex.printStackTrace();
 
     public DiscordBot(String token, String prefix) {
         this.token = token;
@@ -32,7 +38,16 @@ public class DiscordBot {
     public void loginBot() {
         instance = this;
         try {
-            client = DiscordClientBuilder.create(token).build();
+            client = DiscordClientBuilder.create(token)
+                    // globally suppress any not found (404) error
+                    .onClientResponse(ResponseFunction.emptyIfNotFound())
+                    // server error (500) while creating a message will be retried, with backoff, until it succeeds
+                    .onClientResponse(ResponseFunction.retryWhen(RouteMatcher.route(Routes.MESSAGE_CREATE),
+                            Retry.onlyIf(ClientException.isRetryContextStatusCode(500))
+                                    .exponentialBackoffWithJitter(Duration.ofSeconds(2), Duration.ofSeconds(10))))
+                    // wait 1 second and retry any server error (500)
+                    .onClientResponse(ResponseFunction.retryOnceOnErrorStatus(500))
+                    .build();
             gateway = client.login().block();
         } catch (Exception e) {
             System.out.println("Error initializing bot with token " + token + "!");
@@ -73,11 +88,11 @@ public class DiscordBot {
         return this.prefix;
     }
 
-    public void setCommandErrorHandler(BiConsumer<Exception, Command> consumer) {
+    public void setCommandErrorHandler(BiConsumer<Throwable, Command> consumer) {
         DiscordBot.getBot().commandException = consumer;
     }
 
-    public void setEventErrorHandler(BiConsumer<Exception, Event> consumer) {
+    public void setEventErrorHandler(BiConsumer<Throwable, Event> consumer) {
         DiscordBot.getBot().eventException = consumer;
     }
 

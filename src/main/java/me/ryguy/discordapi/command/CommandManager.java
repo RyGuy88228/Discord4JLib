@@ -23,10 +23,8 @@ public class CommandManager {
                 .filter(cmd -> cmd.getName().equalsIgnoreCase(s) || cmd.getAliases().contains(s))
                 .findFirst();
 
-        if (ret.isPresent())
-            return ret.get();
+        return ret.orElse(null);
 
-        return null;
     }
 
     public static List<Command> getRegisteredCommands() {

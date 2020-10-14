@@ -10,8 +10,9 @@ import java.util.Map;
 public class EventHandler {
     public EventHandler() {
         DiscordBot.getBot().getGateway().on(Event.class).subscribe(e -> {
-            if (EventManager.getEvents().containsKey(e.getClass())) {
-                for (Map.Entry<Listener, List<Method>> set : EventManager.getEvents().get(e.getClass()).entrySet()) {
+            if (EventHolder.of(e.getClass()) != null) {
+                EventHolder holder = EventHolder.of(e.getClass());
+                for (Map.Entry<Listener, List<Method>> set : holder.getMethods().entrySet()) {
                     for (Method m : set.getValue()) {
                         try {
                             m.invoke(set.getKey(), e);
