@@ -16,8 +16,7 @@ import java.util.function.Consumer;
 @Getter
 @Setter
 public class WorkFlow<T> {
-
-    private static final List<WorkFlow> flows = new ArrayList<>();
+    private static final List<WorkFlow<?>> flows = new ArrayList<>();
 
     private final T type;
     private final Queue<Step> steps;
@@ -107,8 +106,7 @@ public class WorkFlow<T> {
     }
 
     public void sendMessage(Mono<Message> msg) {
-        Message m = msg.block();
-        this.lastSetupMsg = m;
+        this.lastSetupMsg = msg.block();
     }
 
     public class Step {

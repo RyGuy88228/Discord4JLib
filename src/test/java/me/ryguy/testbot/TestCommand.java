@@ -22,6 +22,6 @@ public class TestCommand extends Command {
         } else {
             message.getChannel().block().createMessage("Null Guild Icon URL!").block();
         }
-        return null;
+        return Mono.empty();
     }
 }

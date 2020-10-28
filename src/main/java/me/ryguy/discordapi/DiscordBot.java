@@ -11,18 +11,21 @@ import discord4j.rest.http.client.ClientException;
 import discord4j.rest.request.RouteMatcher;
 import discord4j.rest.response.ResponseFunction;
 import discord4j.rest.route.Routes;
+import lombok.Getter;
 import lombok.Setter;
 import me.ryguy.discordapi.command.Command;
 import me.ryguy.discordapi.command.CommandHandler;
 import me.ryguy.discordapi.listeners.EventHandler;
 import me.ryguy.discordapi.listeners.MainListener;
+import me.ryguy.discordapi.util.Logger;
 import reactor.retry.Retry;
 
 import java.time.Duration;
+import java.util.concurrent.ExecutorService;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class DiscordBot {
+public class DiscordBot implements Logger {
 
     private static DiscordBot instance;
     private final String token;
@@ -35,6 +38,10 @@ public class DiscordBot {
     public Consumer<Event> checkEventCancellation = event -> {};
     private DiscordClient client;
     private GatewayDiscordClient gateway;
+    @Getter
+    public ExecutorService commandPool;
+    @Getter
+    public ExecutorService eventPool;
 
     public DiscordBot(String token, String prefix) {
         this.token = token;
@@ -67,15 +74,14 @@ public class DiscordBot {
         }
         gateway.on(ReadyEvent.class).subscribe(e -> {
             User self = e.getSelf();
-            System.out.println(String.format("[RyDiscordLib] Logged in as %s#%s!", self.getUsername(), self.getDiscriminator()));
-            System.out.println(String.format("[RyDiscordLib] Using command prefix '%s'!", this.prefix));
+            info(String.format("[RyDiscordLib] Logged in as %s#%s!", self.getUsername(), self.getDiscriminator()));
+            info(String.format("[RyDiscordLib] Using command prefix '%s'!", this.prefix));
         });
 
-        new CommandHandler();
-        new EventHandler();
+        new CommandHandler().init();
+        new EventHandler().init();
 
         new MainListener().register();
-
     }
 
     public void endStartup() {
