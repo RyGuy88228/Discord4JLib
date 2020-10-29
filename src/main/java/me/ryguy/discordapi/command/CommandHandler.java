@@ -22,9 +22,9 @@ public class CommandHandler implements MultiThreader, Logger {
 
                 if (!message.getAuthor().isPresent() || message.getAuthor().get().isBot())
                     return;
-
                 try {
                     List<String> command = parseCommand(message.getContent());
+                    if(command.size() == 0) return;
                     cmd.set(CommandManager.getCommand(command.get(0)));
 
                     if (cmd.get() == null || !cmd.get().canExecute(e.getMessage(), true))

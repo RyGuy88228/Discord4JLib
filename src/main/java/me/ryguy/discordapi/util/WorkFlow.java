@@ -10,13 +10,14 @@ import reactor.core.publisher.Mono;
 import reactor.function.Consumer3;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
 @Getter
 @Setter
 public class WorkFlow<T> {
-    private static final List<WorkFlow<?>> flows = new ArrayList<>();
+    private static final Queue<WorkFlow<?>> flows = new ConcurrentLinkedQueue<>();
 
     private final T type;
     private final Queue<Step> steps;
@@ -37,7 +38,7 @@ public class WorkFlow<T> {
 
     public static void handle(MessageCreateEvent e) {
         for (WorkFlow flow : flows) {
-            if (flow.channel == e.getMessage().getChannel().block().getId().asLong() && flow.user == e.getMessage().getAuthor().get().getId().asLong()) {
+            if (flow.channel == e.getMessage().getChannel().block().getId().asLong() && e.getMessage().getAuthor().isPresent() && flow.user == e.getMessage().getAuthor().get().getId().asLong()) {
                 if (flow.rules.containsKey(e.getMessage().getContent().toLowerCase())) {
                     ((Consumer<WorkFlow>) flow.rules.get(e.getMessage().getContent().toLowerCase())).accept(flow.getInstance());
                 }
