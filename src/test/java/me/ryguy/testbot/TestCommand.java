@@ -4,7 +4,7 @@ import discord4j.core.object.entity.Message;
 import discord4j.rest.util.Image;
 import me.ryguy.discordapi.command.Command;
 import reactor.core.publisher.Mono;
-
+//Test Command class
 public class TestCommand extends Command {
     public TestCommand() {
         super("ping", "pinger");
